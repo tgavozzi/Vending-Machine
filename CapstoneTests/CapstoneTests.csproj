@@ -56,6 +56,7 @@
     <Compile Include="CandyItemTests.cs" />
     <Compile Include="ChipItemTests.cs" />
     <Compile Include="GumItemTests.cs" />
+    <Compile Include="Change35CentTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Capstone\Capstone.csproj">
