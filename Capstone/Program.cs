@@ -7,12 +7,14 @@ using Capstone.Classes;
 
 namespace Capstone
 {
-    class Program
+   public class Program
     {
+        
         static void Main(string[] args)
         {
-            GumItem tuttie = new GumItem("HAPPY", .5M);
-            
+
         }
+        
+     
     }
 }

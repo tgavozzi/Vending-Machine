@@ -17,7 +17,7 @@ namespace CapstoneTests
         }
 
         [TestMethod]
-        public void WillOneDollar65CentsCentRenturn1QAnd1Dime()
+        public void Will1Dollar65CentsCentRenturn1QAnd1Dime()
         {
             Change one65 = new Change(1.65M);
 
