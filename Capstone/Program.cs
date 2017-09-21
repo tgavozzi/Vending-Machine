@@ -12,7 +12,10 @@ namespace Capstone
         
         static void Main(string[] args)
         {
-
+            VendingMachine test = new VendingMachine();
+            test.FeedMoney(100);
+            test.ReturnChange();
+            
         }
         
      

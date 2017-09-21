@@ -58,6 +58,8 @@
     <Compile Include="GumItemTests.cs" />
     <Compile Include="Change35CentTests.cs" />
     <Compile Include="InventoryFileDALTests.cs" />
+    <Compile Include="ReturnChangeTests.cs" />
+    <Compile Include="FeedMoneyTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Capstone\Capstone.csproj">
