@@ -26,7 +26,7 @@ namespace Capstone.Classes
         public VendingMachineItem(string itemName, decimal price)
         {
             this.itemName = itemName;
-            this.priceInCents = (price * 100); //should this be * 100?
+            this.priceInCents = price; 
         }
 
 

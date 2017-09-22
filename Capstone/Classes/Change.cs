@@ -12,7 +12,7 @@ namespace Capstone.Classes
         private int dimes;
         private int nickels;
         private int quarters;
-        private double totalChange;
+        //private double totalChange;
 
 
         public int Dimes
@@ -37,7 +37,7 @@ namespace Capstone.Classes
 
         public Change(decimal amountInDollars)
         {
-            amountInDollars = amountInDollars * 100;
+            
             while (amountInDollars >= 25)
             {
                 this.quarters += 1;

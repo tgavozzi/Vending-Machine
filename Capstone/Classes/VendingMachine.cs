@@ -10,9 +10,7 @@ namespace Capstone.Classes
     public class VendingMachine
     {
         private decimal currentBalance;
-        private string[] slots;
         private Dictionary<string, List<VendingMachineItem>> inventory;
-        private InventoryFileDAL inventorySource;
         // private TransactionFileLog transactionLogger;
 
         public decimal CurrentBalance
@@ -22,7 +20,7 @@ namespace Capstone.Classes
 
         public string[] Slots
         {
-            get { return slots; }
+            get { return this.inventory.Keys.ToArray(); }
         }
 
         public void FeedMoney(int dollars)
@@ -33,40 +31,68 @@ namespace Capstone.Classes
         public VendingMachine()
         {
             InventoryFileDAL fileReader = new InventoryFileDAL();
-            fileReader.GetInventory();
+            this.inventory = fileReader.GetInventory();
         }
 
-        public VendingMachine(Dictionary<string, List<VendingMachineItem>>inventory)
+        public VendingMachine(Dictionary<string, List<VendingMachineItem>> inventory)
         {
-            this.inventory = inventory; 
+            this.inventory = inventory;
         }
 
         public Change ReturnChange()
         {
+            
             decimal changeToGive = this.currentBalance;
             this.currentBalance = 0;
-            return new Change(this.currentBalance);
-      
+            return new Change(changeToGive);
+
         }
 
         public VendingMachineItem GetItemAtSLot(string slotId)
         {
-            List<VendingMachineItem> vending = new List<VendingMachineItem>();
-            vending = inventory[slotId];
-            string name = vending[0].itemName;
-            string price = vending[0].Price.ToString();
-            string[] temp = new string[] { name, price };
-            this.slots = temp;
-
-            return null;
+            List<VendingMachineItem> vending = inventory[slotId];
+            return vending[0];
 
         }
-        //public int GetQuantityRemaining(string slotId)
-        //{
-        //    return inventory.
-        //}
 
+        public int GetQuantityRemaining(string slotId)
+        {
+            if (inventory.ContainsKey(slotId))
+            {
+                return inventory[slotId].Count();
+            }
 
+            return 0;
+        }
+
+        public VendingMachineItem Purchase(string slotId)
+        {
+            List<VendingMachineItem> purchaseItem = inventory[slotId];
+
+            try
+            {
+
+                if (!inventory.ContainsKey(slotId))
+                {
+                    return null;
+                }
+                else if (inventory.ContainsKey(slotId) && inventory[slotId].Count() < 0)
+                {
+                    return null;
+                }
+                else if (inventory.ContainsKey(slotId) && this.currentBalance <= purchaseItem[0].Price)
+                {
+                    return null;
+                }
+                this.currentBalance -= purchaseItem[0].Price;
+                inventory[slotId].Remove(purchaseItem[0]);
+                return purchaseItem[0];
+            }
+            catch(ArgumentOutOfRangeException ex)
+            {
+                  return null;
+            }
+        }
 
     }
 }

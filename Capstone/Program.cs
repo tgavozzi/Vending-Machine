@@ -7,17 +7,13 @@ using Capstone.Classes;
 
 namespace Capstone
 {
-   public class Program
+    public class Program
     {
-        
-        static void Main(string[] args)
+         static void Main(string[] args)
         {
-            VendingMachine test = new VendingMachine();
-            test.FeedMoney(100);
-            test.ReturnChange();
-            
+            VendingMachineCLI test = new VendingMachineCLI();
+            test.Run();
+
         }
-        
-     
-    }
+     }
 }
