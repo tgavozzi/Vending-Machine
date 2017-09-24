@@ -10,7 +10,7 @@ namespace Capstone.Classes
     public class VendingMachine
     {
         private decimal currentBalance;
-        private Dictionary<string, List<VendingMachineItem>> inventory;
+        public Dictionary<string, List<VendingMachineItem>> inventory;
         // private TransactionFileLog transactionLogger;
 
         public decimal CurrentBalance
@@ -41,7 +41,7 @@ namespace Capstone.Classes
 
         public Change ReturnChange()
         {
-            
+
             decimal changeToGive = this.currentBalance;
             this.currentBalance = 0;
             return new Change(changeToGive);
@@ -69,30 +69,27 @@ namespace Capstone.Classes
         {
             List<VendingMachineItem> purchaseItem = inventory[slotId];
 
-            try
+            if (inventory[slotId].Count() > 0)
             {
-
-                if (!inventory.ContainsKey(slotId))
+                if (inventory.ContainsKey(slotId) && this.currentBalance >= purchaseItem[0].Price)
                 {
-                    return null;
+                    this.currentBalance -= purchaseItem[0].Price;
+                    inventory[slotId].Remove(purchaseItem[0]);
+                    return purchaseItem[0];
                 }
-                else if (inventory.ContainsKey(slotId) && inventory[slotId].Count() < 0)
-                {
-                    return null;
-                }
-                else if (inventory.ContainsKey(slotId) && this.currentBalance <= purchaseItem[0].Price)
-                {
-                    return null;
-                }
-                this.currentBalance -= purchaseItem[0].Price;
-                inventory[slotId].Remove(purchaseItem[0]);
-                return purchaseItem[0];
             }
-            catch(ArgumentOutOfRangeException ex)
-            {
-                  return null;
-            }
+            return null;
         }
-
     }
-}
+}        //if (!inventory.ContainsKey(slotId))
+         //{
+         //    return null;
+         //}
+         //else if (inventory.ContainsKey(slotId) && inventory[slotId].Count() < 0)
+         //{
+         //    return null;
+         //}
+         //else if (inventory.ContainsKey(slotId) && this.currentBalance <= purchaseItem[0].Price)
+         //{
+         //    return null;
+         //}

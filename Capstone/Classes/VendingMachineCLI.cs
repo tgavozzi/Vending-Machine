@@ -48,17 +48,12 @@ namespace Capstone.Classes
             }
         }
 
-        private void PrintTitle()
-        {
-            Console.WriteLine("***WELCOME TO THE AMAZING TEDRO-MATIC 500***");
-        }
-
         public void DisplayInventory()
         {
             string[] slots = vm.Slots;
-            for(int i = 0; i < slots.Length; i++)
+            for (int i = 0; i < slots.Length; i++)
             {
-                if(vm.GetQuantityRemaining(slots[i]) < 1)
+                if (vm.GetQuantityRemaining(slots[i]) < 1)
                 {
                     Console.WriteLine($"{slots[i]} ** SOLD OUT ** {vm.GetItemAtSLot(slots[i]).ItemName} - {vm.GetItemAtSLot(slots[i]).Price.ToString("C")}");
                 }
@@ -98,46 +93,54 @@ namespace Capstone.Classes
                     if (option_InsertMoney == "1")
                     {
                         vm.FeedMoney(1);
-                        Console.WriteLine($"Current Money Provided: {vm.CurrentBalance}");
-                        Console.WriteLine("Would you like to deposit more money (Y/N)? " );
+                        Console.WriteLine($"Current Money Provided: {vm.CurrentBalance.ToString("C")}");
+                        TransactionFileLog feedMoney = new TransactionFileLog("Log.txt");
+                        feedMoney.RecordDeposit(1, vm.CurrentBalance);
+                        Console.WriteLine("Would you like to deposit more money (Y/N)? ");
                         string moreMoney = Console.ReadLine().ToUpper();
-                        if(moreMoney == "N")
+                        if (moreMoney == "N")
                         {
-                            break;
+                            DisplayPurchaseMenu();
                         }
                     }
                     else if (option_InsertMoney == "2")
                     {
                         vm.FeedMoney(5);
-                        Console.WriteLine($"Current Money Provided: {vm.CurrentBalance}");
+                        Console.WriteLine($"Current Money Provided: {vm.CurrentBalance.ToString("C")}");
+                        TransactionFileLog feedMoney = new TransactionFileLog("Log.txt");
+                        feedMoney.RecordDeposit(5, vm.CurrentBalance);
                         Console.WriteLine("Would you like to deposit more money (Y/N)? ");
                         string moreMoney = Console.ReadLine().ToUpper();
                         if (moreMoney == "N")
                         {
-                            break;
+                            DisplayPurchaseMenu();
                         }
 
                     }
                     else if (option_InsertMoney == "3")
                     {
                         vm.FeedMoney(10);
-                        Console.WriteLine($"Current Money Provided: {vm.CurrentBalance}");
+                        Console.WriteLine($"Current Money Provided: {vm.CurrentBalance.ToString("C")}");
+                        TransactionFileLog feedMoney = new TransactionFileLog("Log.txt");
+                        feedMoney.RecordDeposit(10, vm.CurrentBalance);
                         Console.WriteLine("Would you like to deposit more money (Y/N)? ");
                         string moreMoney = Console.ReadLine().ToUpper();
                         if (moreMoney == "N")
                         {
-                            break;
+                            DisplayPurchaseMenu();
                         }
                     }
                     else if (option_InsertMoney == "4")
                     {
                         vm.FeedMoney(20);
-                        Console.WriteLine($"Current Money Provided: {vm.CurrentBalance}");
+                        Console.WriteLine($"Current Money Provided: {vm.CurrentBalance.ToString("C")}");
+                        TransactionFileLog feedMoney = new TransactionFileLog("Log.txt");
+                        feedMoney.RecordDeposit(20, vm.CurrentBalance);
                         Console.WriteLine("Would you like to deposit more money (Y/N)? ");
                         string moreMoney = Console.ReadLine().ToUpper();
                         if (moreMoney == "N")
                         {
-                            break;
+                            DisplayPurchaseMenu();
                         }
                     }
                     else
@@ -146,7 +149,7 @@ namespace Capstone.Classes
                     }
 
                 }
-                if(option_DisplayPurchaseMenu == "2")
+                if (option_DisplayPurchaseMenu == "2")
                 {
                     Console.WriteLine("Please select a SlotId to purchase: ");
                     Console.WriteLine();
@@ -157,16 +160,58 @@ namespace Capstone.Classes
                         {
                             Console.WriteLine($"{slots[i]} ** SOLD OUT ** {vm.GetItemAtSLot(slots[i]).ItemName} - {vm.GetItemAtSLot(slots[i]).Price.ToString("C")}");
                         }
-
                         Console.WriteLine($"{slots[i]} | {vm.GetQuantityRemaining(slots[i].ToString())} - {vm.GetItemAtSLot(slots[i]).ItemName} - {vm.GetItemAtSLot(slots[i]).Price.ToString("C")} ");
+
                     }
                     Console.WriteLine();
 
                     Console.Write("Selection: ");
                     option_MakeSelection = Console.ReadLine();
-                    consumeList.Add(vm.Purchase(option_MakeSelection));
+                    //consumeList.Add(vm.Purchase(option_MakeSelection));
 
+                    try
+                    {
+                        if (vm.GetQuantityRemaining(option_MakeSelection.ToString()) <= 0)
+                        {
+                            throw new OutOfStockException("This item is out of stock, please select again!");
+                        }
+                    }
+                    catch(OutOfStockException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        DisplayPurchaseMenu();
+                    }
+
+                    try
+                    {
+                        if(!vm.inventory.ContainsKey(option_MakeSelection))
+                        {
+                            throw new InvalidSlotIDException("Invalid selection, please try again!");
+                        }
+                    }
+                    catch(InvalidSlotIDException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        DisplayPurchaseMenu();
+                    }
+
+                    try
+                    {
+                        if(vm.CurrentBalance < vm.GetItemAtSLot(option_MakeSelection).Price)
+                        {
+                            throw new InsufficientFundsException($"NO {vm.GetItemAtSLot(option_MakeSelection).ItemName} FOR YOU! Give me more money...");
+                        }
+                    }
+                    catch(InsufficientFundsException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        DisplayPurchaseMenu();
+                    }
+
+                    TransactionFileLog feedMoney = new TransactionFileLog("Log.txt"); //would it work best to put after purchase and make currentBalane+vm.GetItemAtSlot
+                    feedMoney.RecordPurchase(vm.GetItemAtSLot(option_MakeSelection).ItemName, option_MakeSelection, vm.CurrentBalance, (vm.CurrentBalance - vm.GetItemAtSLot(option_MakeSelection).Price));
                     vm.Purchase(option_MakeSelection);
+                    consumeList.Add(vm.GetItemAtSLot(option_MakeSelection));
                     Console.WriteLine($"You purchased {vm.GetItemAtSLot(option_MakeSelection).ItemName}! ENJOY!!");
                     Console.WriteLine($"Current Balance is: {vm.CurrentBalance}");
                     Console.WriteLine();
@@ -174,29 +219,40 @@ namespace Capstone.Classes
                     string wantAnotherItem = Console.ReadLine().ToUpper();
                     if (wantAnotherItem == "N")
                     {
-                        break;
+                        return; //DisplayPurchaseMenu();
                     }
-
-                    // Write if's for exceptions!!
+                    
                 }
-                if(option_DisplayPurchaseMenu == "3")
+                if (option_DisplayPurchaseMenu == "3")
                 {
-                    Console.WriteLine($"Your change is {vm.ReturnChange().Quarters} quarters, {vm.ReturnChange().Dimes} dimes, {vm.ReturnChange().Nickels} nickels!");
+
+                    TransactionFileLog feedMoney = new TransactionFileLog("Log.txt");
+                    feedMoney.RecordCompleteTransaction(vm.CurrentBalance);
+                    DisplayChange();
+                    vm.ReturnChange();
                     Console.WriteLine("Your current balance is " + vm.CurrentBalance.ToString("C"));
 
                     for (int i = 0; i < consumeList.Count; i++)
                     {
                         Console.WriteLine("I'm enjoying my " + consumeList[i].itemName + ", " + consumeList[i].Consume());
                     }
-                    return;
+                    Environment.Exit(0) ;
                 }
+
             }
-
-
-
-
         }
 
+        private void DisplayChange()
+        {
+            Change changeToReturn = new Change(vm.CurrentBalance);
+            Console.WriteLine($"Your change is {changeToReturn.Quarters} quarters, {changeToReturn.Dimes} dimes, {changeToReturn.Nickels} nickels!");
+        }
+
+
+        private void PrintTitle()
+        {
+            Console.WriteLine("***WELCOME TO THE AMAZING TEDRO-MATIC 500***");
+        }
     }
 }
 

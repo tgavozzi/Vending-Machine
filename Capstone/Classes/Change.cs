@@ -17,17 +17,17 @@ namespace Capstone.Classes
 
         public int Dimes
         {
-            get { return dimes; }
+            get { return this.dimes; }
         }
 
         public int Nickels
         {
-            get { return nickels; }
+            get { return this.nickels; }
         }
 
         public int Quarters
         {
-            get { return quarters; }
+            get { return this.quarters; }
         }
 
         public double TotalChange
@@ -37,24 +37,25 @@ namespace Capstone.Classes
 
         public Change(decimal amountInDollars)
         {
-            
-            while (amountInDollars >= 25)
+
+            while (amountInDollars >= .25M)
             {
                 this.quarters += 1;
-                amountInDollars -= 25;
+                amountInDollars -= .25M;
             }
-            while (amountInDollars >= 10)
+            while (amountInDollars >= .10M)
             {
                 this.dimes += 1;
-                amountInDollars -= 10;
+                amountInDollars -= .10M;
             }
-            while (amountInDollars >= 5)
+            while (amountInDollars >= .05M)
             {
                 this.nickels += 1;
-                amountInDollars -= 5;
+                amountInDollars -= .05M;
             }
 
         }
+
         public Change(int amountInCents)
         {
             while (amountInCents >= 25)
@@ -72,10 +73,8 @@ namespace Capstone.Classes
                 this.nickels += 1;
                 amountInCents -= 5;
             }
-
-
-
         }
+
     }
 }
 
