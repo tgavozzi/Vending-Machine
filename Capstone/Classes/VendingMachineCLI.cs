@@ -100,7 +100,7 @@ namespace Capstone.Classes
                         string moreMoney = Console.ReadLine().ToUpper();
                         if (moreMoney == "N")
                         {
-                            DisplayPurchaseMenu();
+                            break; //DisplayPurchaseMenu();
                         }
                     }
                     else if (option_InsertMoney == "2")
@@ -113,7 +113,7 @@ namespace Capstone.Classes
                         string moreMoney = Console.ReadLine().ToUpper();
                         if (moreMoney == "N")
                         {
-                            DisplayPurchaseMenu();
+                            break; // DisplayPurchaseMenu();
                         }
 
                     }
@@ -127,7 +127,7 @@ namespace Capstone.Classes
                         string moreMoney = Console.ReadLine().ToUpper();
                         if (moreMoney == "N")
                         {
-                            DisplayPurchaseMenu();
+                            break; // DisplayPurchaseMenu();
                         }
                     }
                     else if (option_InsertMoney == "4")
@@ -140,7 +140,7 @@ namespace Capstone.Classes
                         string moreMoney = Console.ReadLine().ToUpper();
                         if (moreMoney == "N")
                         {
-                            DisplayPurchaseMenu();
+                            break; // DisplayPurchaseMenu();
                         }
                     }
                     else
@@ -171,7 +171,7 @@ namespace Capstone.Classes
 
                     try
                     {
-                        if (vm.GetQuantityRemaining(option_MakeSelection.ToString()) <= 0)
+                        if (vm.GetQuantityRemaining(option_MakeSelection.ToString()) == 0)
                         {
                             throw new OutOfStockException("This item is out of stock, please select again!");
                         }
@@ -219,7 +219,7 @@ namespace Capstone.Classes
                     string wantAnotherItem = Console.ReadLine().ToUpper();
                     if (wantAnotherItem == "N")
                     {
-                        return; //DisplayPurchaseMenu();
+                        break; //DisplayPurchaseMenu(); 
                     }
                     
                 }
@@ -234,9 +234,13 @@ namespace Capstone.Classes
 
                     for (int i = 0; i < consumeList.Count; i++)
                     {
-                        Console.WriteLine("I'm enjoying my " + consumeList[i].itemName + ", " + consumeList[i].Consume());
+                        Console.WriteLine("I'm enjoying my " + consumeList[i].itemName + ", " + consumeList[i].Consume()); ///Cant figure why gum prints GLUG GLUG?
                     }
                     Environment.Exit(0) ;
+                }
+                if (option_DisplayPurchaseMenu == "M")
+                {
+                    break;
                 }
 
             }

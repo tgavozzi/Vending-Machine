@@ -61,27 +61,34 @@ namespace Capstone.Classes
             {
                 return inventory[slotId].Count();
             }
-
-            return 0;
+            return inventory[slotId].Count();
         }
 
         public VendingMachineItem Purchase(string slotId)
-        {
-            List<VendingMachineItem> purchaseItem = inventory[slotId];
-
-            if (inventory[slotId].Count() > 0)
             {
-                if (inventory.ContainsKey(slotId) && this.currentBalance >= purchaseItem[0].Price)
+                List<VendingMachineItem> purchaseItem = inventory[slotId];
+
+                try
                 {
-                    this.currentBalance -= purchaseItem[0].Price;
-                    inventory[slotId].Remove(purchaseItem[0]);
-                    return purchaseItem[0];
+                    if (inventory[slotId].Count() > 1)
+                    {
+                        if (inventory.ContainsKey(slotId) && this.currentBalance >= purchaseItem[0].Price)
+                        {
+                            this.currentBalance -= purchaseItem[0].Price;
+                            inventory[slotId].Remove(purchaseItem[0]);
+                            return purchaseItem[0];
+                        }
+
+                    }
                 }
+                catch (IndexOutOfRangeException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                return null;
             }
-            return null;
         }
-    }
-}        //if (!inventory.ContainsKey(slotId))
+    }        //if (!inventory.ContainsKey(slotId))
          //{
          //    return null;
          //}
